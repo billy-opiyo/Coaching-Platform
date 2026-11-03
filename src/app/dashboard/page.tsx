@@ -12,9 +12,10 @@ export default function DashboardPage() {
 async function DashboardContent() {
   const user = await requireUser();
   if (!user) return null;
-  const [paths, completedCount] = await Promise.all([
+  const [paths, completedCount, recentCheckIn] = await Promise.all([
     getPublishedPaths(),
     getPrisma().lessonProgress.count({ where: { userId: user.id } }),
+    getPrisma().trackerEntry.findFirst({ where: { userId: user.id }, orderBy: { entryDate: "desc" }, select: { entryDate: true, mood: true, energy: true, stress: true } }),
   ]);
   const totalLessons = paths.reduce((total, path) => total + path.lessons.length, 0);
   return <>
@@ -24,8 +25,9 @@ async function DashboardContent() {
         <article className="member-feature member-feature-primary"><p className="eyebrow eyebrow-light">Learning progress</p><h2>{completedCount} of {totalLessons} lessons complete</h2><p>Your progress is private to your account. You can change it any time.</p><Link className="button button-light" href="/dashboard/learning">Continue learning</Link></article>
         <article className="member-feature"><p className="eyebrow">Account</p><h2>{user.role === "FREE_MEMBER" ? "Free member" : "Member access"}</h2><p>{user.email}</p><Link className="text-link" href="/dashboard/settings">Manage account →</Link></article>
       </div>
-      <div className="member-later-grid" aria-label="Features planned for future phases">
-        <article className="info-card"><h2>Daily check-in</h2><p>Private habit and energy tracking is being built for a later phase. No personal reflections are collected here yet.</p><span className="status-badge">Coming later</span></article>
+      <div className="member-later-grid" aria-label="Member tools">
+        <article className="info-card"><h2>Daily check-in</h2><p>{recentCheckIn ? `Your latest check-in was ${recentCheckIn.entryDate.toLocaleDateString(undefined, { dateStyle: "medium", timeZone: "UTC" })}.` : "Add an optional private reflection about today."} Scores and notes are visible only to you.</p><Link className="text-link" href="/dashboard/tracker">Open your tracker →</Link></article>
+        <article className="info-card"><h2>Two-minute pause</h2><p>Use an optional text-first grounding sequence. It does not save protocol activity.</p><Link className="text-link" href="/dashboard/protocol">Open the exercise →</Link></article>
         <article className="info-card"><h2>Coaching and groups</h2><p>Bookings and optional accountability groups are not active. No paid feature is presented as available.</p><span className="status-badge">Not available yet</span></article>
       </div>
     </section>

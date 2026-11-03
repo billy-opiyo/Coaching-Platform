@@ -47,6 +47,7 @@ model User {
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   lessonProgress      LessonProgress[]
+  trackerEntries      TrackerEntry[]
   resetTokens         PasswordResetToken[]
   entitlements        Entitlement[]
 
@@ -239,6 +240,21 @@ model LessonProgress {
 
   @@unique([userId, lessonId])
   @@index([userId, completedAt])
+}
+
+model TrackerEntry {
+  id         String   @id @default(cuid())
+  userId     String
+  entryDate  DateTime @db.Date
+  mood       Int
+  energy     Int
+  stress     Int
+  reflection String?  @db.VarChar(500)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, entryDate])
 }
 
 model ExternalResource {

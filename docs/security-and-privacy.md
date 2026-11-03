@@ -48,13 +48,13 @@ Treat account data, behavior-related activity, tracker records, reflections, gro
 
 - Squad membership is opt-in, capacity-safe, and reversible via leave flow.
 - Explain what peers can see; do not promise peer confidentiality absolutely.
-- Keep tracker records and protocol usage private by default. Any future sharing requires explicit, revocable per-member controls.
+- Tracker check-ins are scoped by the authenticated user on every query and mutation, unique per member/date, and can be edited or deleted by that member. Do not expose notes to content administrators or analytics. The browser-only protocol does not persist use or answers.
 - Do not retain free-text protocol responses or microphone audio without a documented necessity and explicit disclosure.
 - Provide reporting/moderation mechanisms and clear group guidelines once approved.
 
 ## Data lifecycle and user rights
 
-Members can record and cancel an account-deletion request, but no destructive account deletion runs yet. Blueprint lead cleanup is implemented but cannot run until the owner selects a retention period and configures the authenticated scheduler. Before launch, approve retention/deletion, export, account closure, backups, incident response, and support workflows; then implement and verify processing through administration. Define legal holds and accounting retention separately from private coaching journals. Assess applicable data-protection rules, including Kenya's Data Protection Act where relevant and obligations in countries served. A privacy notice alone is not proof of compliance; obtain appropriate legal review.
+Members can record and cancel an account-deletion request, but no destructive account deletion runs yet. Tracker entries are individually editable/deletable; automated tracker retention and account deletion processing require an approved policy and operations flow. Blueprint lead cleanup is implemented but cannot run until the owner selects a retention period and configures the authenticated scheduler. Before launch, approve retention/deletion, export, account closure, backups, incident response, and support workflows; then implement and verify processing through administration. Define legal holds and accounting retention separately from private coaching journals. Assess applicable data-protection rules, including Kenya's Data Protection Act where relevant and obligations in countries served. A privacy notice alone is not proof of compliance; obtain appropriate legal review.
 
 ## Audit, monitoring, and recovery
 

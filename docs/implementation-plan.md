@@ -1,6 +1,6 @@
 # Implementation Plan
 
-**Status:** Active phased implementation. Phase 0 was reviewed by the owner. Phases 1, 2, and 3 are complete and pushed to GitHub; Phases 4–8 remain.
+**Status:** Active phased implementation. Phase 0 was reviewed by the owner. Phases 1–3 are complete and pushed to GitHub; Phase 4 implementation is complete and being pushed; Phases 5–8 remain.
 
 ## Phase 0 — Audit and architecture (complete)
 
@@ -44,9 +44,12 @@
 
 ## Phase 4 — Panic Protocol and tracker
 
-1. Build configurable two-minute self-help sequence with pause/exit/restart, optional approved audio and text alternative, reduced-motion support, and professional-help guidance.
-2. Build private daily entries, validation, edit/delete/history, weekly/monthly summaries, and truthful charts.
-3. Enforce ownership on every server operation; keep tracker reflections and protocol use private by default.
+1. [x] Build an adjustable-anchor two-minute text sequence with pause/exit/restart, text alternative, reduced-motion support, and general urgent-help guidance. Audio remains unavailable until an approved recording is supplied.
+2. [x] Build private daily entries, bounded validation, edit/delete/history, weekly/monthly summaries, and charts based only on the member's real entries.
+3. [x] Enforce user ownership on every tracker read/mutation; protocol runs in the browser and does not persist use or answers.
+4. [x] Verify migration/schema, typecheck, lint, unit tests (17 passed), production build, and anonymous access gates; push the completed Phase 4 implementation.
+
+**Current boundary:** Tracker records are one per member/date and contain mood, energy, stress scores plus an optional note. Automated retention is not enabled pending owner policy approval. The member/database journey requires configured PostgreSQL and an authenticated account; the protocol is a general self-help exercise, not medical care. No approved audio has been supplied.
 
 ## Phase 5 — Accountability Squads
 

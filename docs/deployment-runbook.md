@@ -22,6 +22,7 @@
 ## Phase 3 Blueprint and email operations
 
 - The additive migration is `prisma/migrations/20261103030000_blueprint_email/migration.sql`. Review it against the Prisma schema and apply it only to a deliberately selected database with `npm run db:deploy`; no owner database has been migrated.
+- Phase 4 adds `prisma/migrations/20261103040000_protocol_tracker/migration.sql`. Apply it through the same reviewed migration process before enabling the member tracker. The protected tracker/protocol routes require an authenticated account; account registration remains gated by policy and service configuration.
 - Keep `BLUEPRINT_CONSENT_APPROVED=false`, `BLUEPRINT_CONSENT_VERSION` unset, and `BLUEPRINT_RETENTION_DAYS` unset until consent copy/version and retention have been approved. Keep `ACCOUNT_POLICIES_APPROVED=false` until account policies are approved.
 - To enable guide requests, provide a real PDF at an absolute `BLUEPRINT_FILE_PATH` outside `public` (5–25 MiB and PDF signature validated), the approved consent/version and 1–3650 day retention, database/auth configuration, Resend API key and sender, HTTPS `APP_URL`, `CRON_SECRET`, and `RESEND_WEBHOOK_SECRET`. Do not place the PDF in a publicly served directory.
 - Configure the hosting scheduler to POST to `/api/jobs/email` with `Authorization: Bearer <CRON_SECRET>` at the chosen cadence. The endpoint is authenticated and reports aggregate counts only. Monitor scheduler execution and provider delivery events; the automation control starts paused.

@@ -30,6 +30,8 @@ Record approved decisions here; do not invent policies, prices, claims, credenti
 | 24 | Blueprint marketing consent wording and version | Unresolved; capture remains disabled until approved copy/version are configured | Business owner/legal adviser | Guide form, consent record, privacy notice | Yes before collecting guide requests |
 | 25 | Lead retention period | Unresolved; capture remains disabled until a 1–3650 day period is selected | Business owner/legal adviser | Automatic deletion and privacy notice | Yes before collecting guide requests |
 | 26 | Account policies approved for registration | Unresolved; account signup remains disabled until the privacy/terms policy approval flag is set | Business owner/legal adviser | Registration gate | Yes before public signup |
+| 27 | Tracker fields, reflection retention, and notice | Initial private check-in uses mood, energy, stress (1–5) and optional 500-character note; tracker retention period remains unresolved and no automated expiry runs | Business owner/legal adviser | Tracker UI, privacy notice, deletion workflow | Yes before broad member rollout |
+| 28 | Panic Protocol copy, audio, and escalation resources | Text-only neutral prompts are implemented; no recording or country-specific crisis contacts supplied | Business owner/coach/legal adviser | Protocol copy/audio and support notice | Audio/market-specific notice before launch |
 
 ## Decision record format
 

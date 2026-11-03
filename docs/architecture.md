@@ -1,6 +1,6 @@
 # Proposed Architecture
 
-**Status:** Current architecture record. Phase 1 public and content-admin foundations plus Phase 2 account authentication/member dashboard foundations are implemented. Provider accounts, owner database, and production environment are not configured.
+**Status:** Current architecture record. Phases 1–4 public, content-admin, member dashboard, tracker, and protocol foundations are implemented. Provider accounts, owner database, and production environment are not configured.
 
 ## System shape
 
@@ -60,7 +60,7 @@ Candidates are not verified account capabilities or service commitments. No paid
 
 `/admin`, `/admin/content`, `/admin/resources`, `/admin/leads`, `/admin/members`, `/admin/programmes`, `/admin/squads`, `/admin/bookings`, `/admin/email`, `/admin/settings`.
 
-Public routes listed above are implemented. Account entry and admin content routes exist; member, lead, payment, booking, and remaining admin workflows are still phased work. Implement functional journeys in phase order; do not create empty route shells as a substitute for behavior.
+Public routes listed above are implemented. Account entry, tracker, protocol, email, and content-admin routes exist; squads, payments, bookings, and remaining admin workflows are still phased work. Implement functional journeys in phase order; do not create empty route shells as a substitute for behavior.
 
 ## Design system direction
 
