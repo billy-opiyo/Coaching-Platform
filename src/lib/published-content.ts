@@ -1,7 +1,7 @@
 import { learningPaths } from "@/lib/content";
 import { getPrisma } from "@/lib/prisma";
 
-export type PublishedLesson = { slug: string; title: string; summary: string; durationMins: number | null; body?: string; youtubeUrl?: string | null };
+export type PublishedLesson = { id?: string; slug: string; title: string; summary: string; durationMins: number | null; body?: string; youtubeUrl?: string | null };
 export type PublishedPath = { id?: string; slug: string; name: string; description: string; lessons: PublishedLesson[]; isSample: boolean };
 
 function samplePaths(): PublishedPath[] {
@@ -21,7 +21,7 @@ export async function getPublishedPaths(): Promise<PublishedPath[]> {
     orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
     include: { lessons: { where: { isPublished: true }, orderBy: [{ displayOrder: "asc" }, { title: "asc" }] } },
   });
-  return paths.map((path) => ({ ...path, isSample: false, lessons: path.lessons.map((lesson) => ({ slug: lesson.slug, title: lesson.title, summary: lesson.summary, durationMins: lesson.durationMins, body: lesson.body, youtubeUrl: lesson.youtubeUrl })) }));
+  return paths.map((path) => ({ ...path, isSample: false, lessons: path.lessons.map((lesson) => ({ id: lesson.id, slug: lesson.slug, title: lesson.title, summary: lesson.summary, durationMins: lesson.durationMins, body: lesson.body, youtubeUrl: lesson.youtubeUrl })) }));
 }
 
 export async function getPublishedPath(slug: string): Promise<PublishedPath | null> {

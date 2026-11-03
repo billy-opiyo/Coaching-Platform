@@ -8,6 +8,7 @@ import { isAuthRateLimited, recordAuthAttempt } from "@/lib/security";
 const credentialSchema = z.object({ email: z.email().max(254), password: z.string().min(1).max(128).refine((value) => Buffer.byteLength(value, "utf8") <= 72) });
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: process.env.AUTH_TRUST_HOST === "true",
   pages: { signIn: "/login" },
   session: { strategy: "jwt", maxAge: 4 * 60 * 60, updateAge: 30 * 60 },
   providers: [

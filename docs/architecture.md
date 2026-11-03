@@ -1,6 +1,6 @@
 # Proposed Architecture
 
-**Status:** Current architecture record. Phase 1 public, account-authentication, database schema, and content-admin foundations are implemented. Provider accounts and production environment are not configured.
+**Status:** Current architecture record. Phase 1 public and content-admin foundations plus Phase 2 account authentication/member dashboard foundations are implemented. Provider accounts, owner database, and production environment are not configured.
 
 ## System shape
 
@@ -24,7 +24,7 @@ Providers ──signed webhooks──> verified event handlers ──> domain se
 
 - **Web:** Next.js App Router, React, strict TypeScript, and npm are installed. Route groups are not needed yet.
 - **Data:** Prisma 7 models PostgreSQL. The initial migration is additive and generated; `DATABASE_URL` is unconfigured and no live migration has run. Neon remains a candidate, not a selected/provisioned service.
-- **Auth:** Auth.js credentials provider with JWT sessions, bcrypt password hashes, verified-email requirement, single-use verification/reset tokens, session-version invalidation, hashed rate-limit buckets, and database-backed role checks is implemented. Registration remains disabled unless explicitly configured with the required services.
+- **Auth:** Auth.js credentials provider with JWT sessions, bcrypt password hashes, verified-email requirement, single-use verification/reset tokens, session-version invalidation, hashed rate-limit buckets, and database-backed role checks is implemented. Trusted host mode is explicit via `AUTH_TRUST_HOST=true` only behind a trusted host/proxy. Registration remains disabled unless explicitly configured with the required services.
 - **Hosting:** No host or deployment configuration was found or selected. Vercel remains a candidate only.
 - **Email:** Resend adapter code is present for verification and reset messages. No API key, verified sender, or production sending configuration is supplied.
 - **Scheduled work:** A reliable external scheduler/queue or durable database-backed job pattern must run independently of a browser. Select based on the chosen host and retry/idempotency needs.

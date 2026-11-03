@@ -1,6 +1,6 @@
 # Data Model Proposal
 
-**Status:** Logical Phase 0 model only. No database or ORM currently exists. Review provider and ORM choices before schema/migration implementation.
+**Status:** Phase 0 logical model with a current implementation snapshot. Prisma 7/PostgreSQL schema and additive migrations now cover User, LearningPath, Lesson, LessonProgress, ExternalResource, SecurityEvent, verification/reset tokens, admin audit logs, and time-bounded Entitlement. The owner database has not been configured or migrated.
 
 ## Modeling principles
 
@@ -24,11 +24,14 @@
 | Coaching | CoachAvailability, Booking, BookingEvent | Transactional conflict prevention; UTC start/end; timezone context; policy-bound cancellation states |
 | Operations | WebhookEvent, AuditLog, ScheduledJob/Outbox (if queue requires) | Unique provider event/idempotency key; safe metadata; least-privilege audit access |
 
-The entities are logical suggestions, not a requirement to create one table per line. Combine only when lifecycle, security, and integrity remain clear.
+The remaining entities are logical suggestions, not a requirement to create one table per line. Combine only when lifecycle, security, and integrity remain clear.
 
 ## Initial relationship outline
 
 - User has one profile and many sessions, lesson progress records, tracker records, bookings, group memberships/check-ins, orders, and entitlements.
+- Current `User` stores a display name, role, email-verification state, disabled state, session version, and a reversible account-deletion request timestamp. Email remains immutable in profile settings.
+- `LessonProgress` is uniquely scoped by user and published lesson. Updates derive the user ID from the verified server session and reject unpublished lessons/paths.
+- `Entitlement` is uniquely scoped by user and key, with grant source, optional expiry, and revocation timestamp. Runtime access checks require an active database record; client-supplied role or plan values are not accepted.
 - Lesson belongs to a learning path/category; lesson progress uniquely links user and lesson.
 - Lead can have consent history and email enrollment/delivery history without requiring a member account.
 - Product maps to one or more entitlements; verified purchases/subscriptions grant time-bounded or persistent entitlement records.

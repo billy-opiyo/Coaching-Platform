@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { headers } from "next/headers";
+import { connection } from "next/server";
 import { getPrisma } from "@/lib/prisma";
 
 const WINDOW_MS = 15 * 60 * 1000;
@@ -38,11 +39,12 @@ export async function enforceAuthRateLimit(email: string): Promise<boolean> {
 }
 
 export async function requireUser() {
+  await connection();
   const { auth } = await import("@/auth");
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) return null;
-  const user = await getPrisma().user.findUnique({ where: { id: userId }, select: { id: true, email: true, name: true, role: true, disabledAt: true, emailVerified: true, sessionVersion: true } });
+  const user = await getPrisma().user.findUnique({ where: { id: userId }, select: { id: true, email: true, name: true, role: true, disabledAt: true, deletionRequestedAt: true, emailVerified: true, sessionVersion: true } });
   if (!user || user.disabledAt || user.sessionVersion !== Number(session.sessionVersion)) return null;
   return user;
 }

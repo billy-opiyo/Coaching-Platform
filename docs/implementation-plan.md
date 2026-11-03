@@ -1,6 +1,6 @@
 # Implementation Plan
 
-**Status:** Active phased implementation. Phase 0 documentation was reviewed by the owner, and the owner authorized continuing through all phases and pushing each completed phase to GitHub. Phase 1 implementation and local acceptance checks are complete; the push is in progress.
+**Status:** Active phased implementation. Phase 0 was reviewed by the owner. Phase 1 was pushed to GitHub as `88c196a`. Phase 2 code and local acceptance checks are complete; the current branch history records each completed phase push.
 
 ## Phase 0 — Audit and architecture (complete)
 
@@ -23,10 +23,13 @@
 
 ## Phase 2 — Authentication and member dashboard
 
-1. Select and configure auth after checking current compatible options during scaffold; support registration, login/logout, session management, verification/recovery as appropriate, secure cookies, and rate limits.
-2. Implement explicit roles/permissions and a central server-side entitlement check.
-3. Add profile, protected dashboard, responsive member navigation, settings, account deletion workflow, and honest empty/loading/error states.
-4. Track lesson completion only for authenticated members; guests retain published-resource access.
+1. [x] Implement credentials registration/login, logout/session handling, email verification/password recovery, secure cookies, and hashed auth rate-limit buckets.
+2. [x] Add least-privilege roles and a central server-side entitlement record/check with expiry and revocation.
+3. [x] Add protected responsive member dashboard, profile/settings, reversible deletion request, and loading/error/empty states.
+4. [x] Track lesson completion only for authenticated members; guest access to published resources is preserved.
+5. [x] Verify migration/client generation, typecheck, lint, unit tests (7 passed), production build, and anonymous route gating; document the DB-backed integration boundary; push the completed Phase 2 commit.
+
+**Current boundary:** Account deletion requests are recorded and cancellable; final deletion/retention processing is not enabled until the owner approves retention and operational policy. Schema changes have not been applied to a real database, and member flows cannot be authenticated end-to-end without database credentials and a verified member account.
 
 ## Phase 3 — Blueprint and email automation
 

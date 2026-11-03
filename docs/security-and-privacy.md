@@ -1,6 +1,6 @@
 # Security and Privacy Baseline
 
-**Status:** Design requirements; no application controls exist yet to verify.
+**Status:** Security baseline and implementation snapshot. Auth.js credential sessions, verified-email login, password hashing, rate-limit buckets, server-side role/ownership checks, token hashing, safe resource URLs, and database-backed entitlement reads are implemented. The remaining controls below are requirements for later phases and production verification.
 
 ## Sensitive data and minimization
 
@@ -49,7 +49,7 @@ Treat account data, behavior-related activity, tracker records, reflections, gro
 
 ## Data lifecycle and user rights
 
-Before launch, approve retention/deletion, export, account closure, backups, incident response, and support workflows. Define legal holds and accounting retention separately from private coaching journals. Assess applicable data-protection rules, including Kenya's Data Protection Act where relevant and obligations in countries served. A privacy notice alone is not proof of compliance; obtain appropriate legal review.
+Members can record and cancel an account-deletion request, but no destructive deletion runs yet. Before launch, approve retention/deletion, export, account closure, backups, incident response, and support workflows; then implement and verify processing through administration. Define legal holds and accounting retention separately from private coaching journals. Assess applicable data-protection rules, including Kenya's Data Protection Act where relevant and obligations in countries served. A privacy notice alone is not proof of compliance; obtain appropriate legal review.
 
 ## Audit, monitoring, and recovery
 

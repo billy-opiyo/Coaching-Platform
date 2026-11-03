@@ -23,12 +23,30 @@ model User {
   sessionVersion Int              @default(0)
   emailVerified DateTime?
   disabledAt    DateTime?
+  deletionRequestedAt DateTime?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   lessonProgress LessonProgress[]
   resetTokens   PasswordResetToken[]
+  entitlements  Entitlement[]
 
   @@index([role, disabledAt])
+}
+
+model Entitlement {
+  id        String   @id @default(cuid())
+  userId    String
+  key       String
+  source    String   @default("manual")
+  grantedAt DateTime @default(now())
+  expiresAt DateTime?
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, key])
+  @@index([userId, revokedAt, expiresAt])
 }
 
 model LearningPath {
