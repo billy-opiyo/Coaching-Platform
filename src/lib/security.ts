@@ -6,6 +6,8 @@ import { getPrisma } from "@/lib/prisma";
 
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 8;
+const BLUEPRINT_WINDOW_MS = 60 * 60 * 1000;
+const BLUEPRINT_MAX_ATTEMPTS = 5;
 
 function digest(value: string): string {
   const secret = process.env.AUTH_SECRET;
@@ -35,6 +37,18 @@ export async function recordAuthAttempt(email: string): Promise<void> {
 export async function enforceAuthRateLimit(email: string): Promise<boolean> {
   if (await isAuthRateLimited(email)) return false;
   await recordAuthAttempt(email);
+  return true;
+}
+
+export async function enforceBlueprintRateLimit(email: string): Promise<boolean> {
+  const requestHeaders = await headers();
+  const address = requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const buckets = [`blueprint:ip:${digest(address)}`, `blueprint:email:${digest(email.toLowerCase())}`];
+  const db = getPrisma();
+  const cutoff = new Date(Date.now() - BLUEPRINT_WINDOW_MS);
+  const counts = await Promise.all(buckets.map((bucket) => db.securityEvent.count({ where: { bucket, createdAt: { gte: cutoff } } })));
+  if (counts.some((count) => count >= BLUEPRINT_MAX_ATTEMPTS)) return false;
+  await db.securityEvent.createMany({ data: buckets.map((bucket) => ({ bucket })) });
   return true;
 }
 

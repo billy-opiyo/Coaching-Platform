@@ -1,6 +1,6 @@
 # Security and Privacy Baseline
 
-**Status:** Security baseline and implementation snapshot. Auth.js credential sessions, verified-email login, password hashing, rate-limit buckets, server-side role/ownership checks, token hashing, safe resource URLs, and database-backed entitlement reads are implemented. The remaining controls below are requirements for later phases and production verification.
+**Status:** Security baseline and implementation snapshot. Auth.js credential sessions, verified-email login, password hashing, rate-limit buckets, server-side role/ownership checks, token hashing, safe resource URLs, database-backed entitlement reads, and gated Blueprint consent/delivery controls are implemented. The owner database/provider and production behavior remain unverified.
 
 ## Sensitive data and minimization
 
@@ -38,6 +38,11 @@ Treat account data, behavior-related activity, tracker records, reflections, gro
 - Clearly distinguish transactional notifications from marketing messages.
 - Validate unsubscribe tokens securely, suppress/cancel pending marketing sends, and prevent duplicate delivery during retries.
 - Use a durable scheduler/queue independent of a browser; log safe delivery metadata and avoid sensitive body content in logs.
+- Blueprint capture fails closed unless the private PDF, approved consent version, owner-selected retention, HTTPS public URL, database/auth credentials, Resend configuration, and scheduler/webhook secrets are present. The submitted email is not stored while this gate is closed.
+- Guide access tokens are signed, short-lived, stored only as hashes, and exchanged through a no-store POST route; the PDF must be outside `public`, is signature/size checked, and each token has a capped download count.
+- Email jobs have unique enrollment/step and idempotency keys, claim locks, bounded retries, and provider message IDs. A global pause control starts enabled. Sequence sends re-check the latest append-only consent event/version and stop if consent no longer matches.
+- Resend webhook signatures are checked against the raw request body and provider event IDs are deduplicated. Lead and event cleanup runs from the authenticated scheduler using the configured retention period while preserving active sequences and unexpired links.
+- Account creation separately remains closed until `ACCOUNT_POLICIES_APPROVED=true`.
 
 ## Groups, tracker, and protocol privacy
 
@@ -49,7 +54,7 @@ Treat account data, behavior-related activity, tracker records, reflections, gro
 
 ## Data lifecycle and user rights
 
-Members can record and cancel an account-deletion request, but no destructive deletion runs yet. Before launch, approve retention/deletion, export, account closure, backups, incident response, and support workflows; then implement and verify processing through administration. Define legal holds and accounting retention separately from private coaching journals. Assess applicable data-protection rules, including Kenya's Data Protection Act where relevant and obligations in countries served. A privacy notice alone is not proof of compliance; obtain appropriate legal review.
+Members can record and cancel an account-deletion request, but no destructive account deletion runs yet. Blueprint lead cleanup is implemented but cannot run until the owner selects a retention period and configures the authenticated scheduler. Before launch, approve retention/deletion, export, account closure, backups, incident response, and support workflows; then implement and verify processing through administration. Define legal holds and accounting retention separately from private coaching journals. Assess applicable data-protection rules, including Kenya's Data Protection Act where relevant and obligations in countries served. A privacy notice alone is not proof of compliance; obtain appropriate legal review.
 
 ## Audit, monitoring, and recovery
 

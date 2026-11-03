@@ -4,6 +4,7 @@ export function isAuthConfigured(): boolean {
 
 export function isSignupAvailable(): boolean {
   return process.env.AUTH_SIGNUPS_ENABLED === "true"
+    && process.env.ACCOUNT_POLICIES_APPROVED === "true"
     && isAuthConfigured()
     && Boolean(process.env.RESEND_API_KEY && process.env.EMAIL_FROM && process.env.APP_URL);
 }

@@ -1,6 +1,6 @@
 # Implementation Plan
 
-**Status:** Active phased implementation. Phase 0 was reviewed by the owner. Phase 1 was pushed to GitHub as `88c196a`. Phase 2 code and local acceptance checks are complete; the current branch history records each completed phase push.
+**Status:** Active phased implementation. Phase 0 was reviewed by the owner. Phases 1, 2, and 3 are complete and pushed to GitHub; Phases 4–8 remain.
 
 ## Phase 0 — Audit and architecture (complete)
 
@@ -33,11 +33,14 @@
 
 ## Phase 3 — Blueprint and email automation
 
-1. Build minimum-field email capture with validation and separate guide request from marketing consent.
-2. Record consent version/status and idempotent lead/subscription state.
-3. Deliver the owner-supplied PDF using the approved public/private access model; document the launch dependency until the PDF and storage policy exist.
-4. Implement editable four-step email sequence, reliable scheduled jobs, delivery-attempt history, retry/idempotency, provider identifiers/webhooks as applicable, admin pause/resume, and unsubscribe suppression.
-5. Use educational email content in place of any unapproved case study; no fabricated stories.
+1. [x] Implement minimum-field email capture, email validation, and separate guide request from optional marketing consent; form stays closed until required configuration is ready.
+2. [x] Record versioned opt-in/opt-out events, idempotent guide delivery, and unique email enrollment/jobs.
+3. [x] Implement private, signed 48-hour PDF access through a route that serves a validated file outside `public`; delivery is gated until the owner supplies the file and sender.
+4. [x] Implement editable four-step sequence, authenticated scheduled worker, delivery tracking, retry/idempotency, signed provider webhooks, admin pause/resume, unsubscribe, and configured-retention cleanup.
+5. [x] Seed only disabled draft templates; require an admin to replace draft text before enabling. No case study is fabricated.
+6. [x] Verify Prisma migration/schema validity and client generation, typecheck, lint, unit tests (14 passed), production build, closed-form behavior without owner credentials; push the completed Phase 3 implementation.
+
+**Current boundary:** Guide requests remain disabled until the owner provides a private PDF path, approves consent wording/version, selects a retention period, configures HTTPS `APP_URL`, Resend sender/API/webhook, database, and scheduler secret. Signup remains separately gated on account policy approval. No real provider, file, database, or scheduler was exercised. A local production-server check confirmed the form is absent and no address is collected while configuration is missing.
 
 ## Phase 4 — Panic Protocol and tracker
 

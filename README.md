@@ -1,6 +1,6 @@
 # Coaching Platform
 
-A phased web platform for educational resources, coaching, and member tools. The current implementation includes the Phase 1 public foundation and a foundation for account authentication and secure content administration. The member dashboard, email automation, squads, payments, and bookings remain future phases.
+A phased web platform for educational resources, coaching, and member tools. The current implementation includes the public foundation, member dashboard, and a gated Blueprint email automation foundation. Squads, payments, and bookings remain future phases.
 
 ## Requirements
 
@@ -31,4 +31,4 @@ Set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_INDEXING_ENABLED=true` only after th
 
 ## Project status
 
-Phase 1 public foundation and Phase 2 authentication/member dashboard foundations are implemented. See [`docs/implementation-plan.md`](docs/implementation-plan.md), [`docs/implementation-audit.md`](docs/implementation-audit.md), and [`docs/business-decisions.md`](docs/business-decisions.md). Public copy and learning topics are sample material until owner approval. The site is configured not to be indexed until the public hostname and indexing approval are supplied. No payments, lead forms, or bookings are live. Database-backed behavior requires a configured PostgreSQL `DATABASE_URL`; authentication also requires `AUTH_SECRET` and `AUTH_TRUST_HOST=true` only behind a trusted host/proxy. No production database or credentials are included.
+Phases 1–3 are implemented and pushed. See [`docs/implementation-plan.md`](docs/implementation-plan.md), [`docs/implementation-audit.md`](docs/implementation-audit.md), and [`docs/business-decisions.md`](docs/business-decisions.md). Public copy and learning topics are sample material until owner approval. The site is configured not to be indexed until the public hostname and indexing approval are supplied. No payments or bookings are live. Blueprint capture remains disabled until the owner supplies and approves the required private PDF, email, consent, retention, database, and scheduler configuration. Database-backed behavior requires a configured PostgreSQL `DATABASE_URL`; authentication also requires `AUTH_SECRET` and `AUTH_TRUST_HOST=true` only behind a trusted host/proxy. No production database or credentials are included.

@@ -1,6 +1,6 @@
 # Data Model Proposal
 
-**Status:** Phase 0 logical model with a current implementation snapshot. Prisma 7/PostgreSQL schema and additive migrations now cover User, LearningPath, Lesson, LessonProgress, ExternalResource, SecurityEvent, verification/reset tokens, admin audit logs, and time-bounded Entitlement. The owner database has not been configured or migrated.
+**Status:** Logical model with current snapshots through Phase 3. Prisma 7/PostgreSQL schema and additive migrations cover identity, published content, progress, entitlements, Blueprint leads/private delivery tokens, append-only consent events, four-step email sequences, durable jobs, provider events, and admin audit. The owner database has not been configured or migrated.
 
 ## Modeling principles
 
@@ -32,6 +32,10 @@ The remaining entities are logical suggestions, not a requirement to create one 
 - Current `User` stores a display name, role, email-verification state, disabled state, session version, and a reversible account-deletion request timestamp. Email remains immutable in profile settings.
 - `LessonProgress` is uniquely scoped by user and published lesson. Updates derive the user ID from the verified server session and reject unpublished lessons/paths.
 - `Entitlement` is uniquely scoped by user and key, with grant source, optional expiry, and revocation timestamp. Runtime access checks require an active database record; client-supplied role or plan values are not accepted.
+- `Lead` stores only the email needed to deliver the guide and request timestamps. `MarketingConsentEvent` records explicit opt-in/opt-out and the consent wording version separately from the guide request.
+- `BlueprintDelivery` stores a hash of a signed 48-hour access token, status, retry timestamps/count, provider message ID, and capped download count. The PDF is read from an absolute path outside the public directory.
+- `EmailSequenceEnrollment` references the exact opt-in event/version. `EmailJob` has unique enrollment/step and provider idempotency keys, due/lock/retry state, message ID, and result status. `EmailAutomationControl` starts paused. `EmailProviderEvent` deduplicates signed provider events.
+- Email lead records and provider events are deleted by the authenticated scheduler after the owner-selected retention period, with active sequences and unexpired guide links allowed to finish first.
 - Lesson belongs to a learning path/category; lesson progress uniquely links user and lesson.
 - Lead can have consent history and email enrollment/delivery history without requiring a member account.
 - Product maps to one or more entitlements; verified purchases/subscriptions grant time-bounded or persistent entitlement records.

@@ -1,11 +1,11 @@
 # Deployment Runbook (Draft)
 
-**Status:** No application or deployment target is configured. This document is a release checklist, not evidence of a deployed service.
+**Status:** Application foundation through Phase 3 is implemented locally. No deployment target, owner database, or production credentials are configured. This document is a release checklist, not evidence of a deployed service.
 
 ## Current state
 
-- Workspace is empty and is not a Git repository.
-- No host, domain, database, environment variable names, CI pipeline, monitoring, backups, or external credentials are configured here.
+- GitHub `main` contains the Phase 0 documentation and completed Phase 1–3 implementation commits.
+- No host, domain, owner database, CI pipeline, monitoring, backups, or external credentials are configured here. Required environment variable names are documented in `.env.example`.
 - Vercel and Neon are candidates from the supplied plan, not verified accounts or selected production infrastructure.
 
 ## Before implementation is deployed
@@ -18,6 +18,16 @@
 6. Review additive database migrations, backup/restore plan, retention policy, and a production-safe migration process. Never run reset/seed/destructive operations against production.
 7. Verify approved copy, legal/policy text, actual Blueprint PDF, privacy disclosures, product/pricing decisions, and support contacts before public launch.
 8. Keep live checkout disabled until merchant/provider setup and payment-state verification are approved.
+
+## Phase 3 Blueprint and email operations
+
+- The additive migration is `prisma/migrations/20261103030000_blueprint_email/migration.sql`. Review it against the Prisma schema and apply it only to a deliberately selected database with `npm run db:deploy`; no owner database has been migrated.
+- Keep `BLUEPRINT_CONSENT_APPROVED=false`, `BLUEPRINT_CONSENT_VERSION` unset, and `BLUEPRINT_RETENTION_DAYS` unset until consent copy/version and retention have been approved. Keep `ACCOUNT_POLICIES_APPROVED=false` until account policies are approved.
+- To enable guide requests, provide a real PDF at an absolute `BLUEPRINT_FILE_PATH` outside `public` (5–25 MiB and PDF signature validated), the approved consent/version and 1–3650 day retention, database/auth configuration, Resend API key and sender, HTTPS `APP_URL`, `CRON_SECRET`, and `RESEND_WEBHOOK_SECRET`. Do not place the PDF in a publicly served directory.
+- Configure the hosting scheduler to POST to `/api/jobs/email` with `Authorization: Bearer <CRON_SECRET>` at the chosen cadence. The endpoint is authenticated and reports aggregate counts only. Monitor scheduler execution and provider delivery events; the automation control starts paused.
+- Configure the Resend webhook to POST to `/api/webhooks/resend` and include the signing secret in `RESEND_WEBHOOK_SECRET`. Raw payload signature verification and event-ID deduplication are required.
+- Review and replace all four disabled `[Draft]` templates from the admin email screen before enabling any step. Confirm unsubscribe and pause/resume behavior in a non-production environment first.
+- There is no live provider, database, scheduler, or private file evidence yet. Do not infer successful delivery from local checks.
 
 ## Release procedure (to be made host-specific)
 

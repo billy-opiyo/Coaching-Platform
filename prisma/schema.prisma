@@ -14,36 +14,180 @@ enum UserRole {
   PLATFORM_ADMIN
 }
 
+enum MarketingConsentAction {
+  OPT_IN
+  OPT_OUT
+}
+
+enum EmailEnrollmentStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum EmailJobStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+  CANCELLED
+}
+
 model User {
-  id            String            @id @default(cuid())
-  email         String            @unique
-  name          String?
-  passwordHash  String
-  role          UserRole          @default(FREE_MEMBER)
-  sessionVersion Int              @default(0)
-  emailVerified DateTime?
-  disabledAt    DateTime?
+  id                  String               @id @default(cuid())
+  email               String               @unique
+  name                String?
+  passwordHash        String
+  role                UserRole             @default(FREE_MEMBER)
+  sessionVersion      Int                  @default(0)
+  emailVerified       DateTime?
+  disabledAt          DateTime?
   deletionRequestedAt DateTime?
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  lessonProgress LessonProgress[]
-  resetTokens   PasswordResetToken[]
-  entitlements  Entitlement[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  lessonProgress      LessonProgress[]
+  resetTokens         PasswordResetToken[]
+  entitlements        Entitlement[]
 
   @@index([role, disabledAt])
 }
 
+model Lead {
+  id                  String                    @id @default(cuid())
+  email               String                    @unique
+  firstRequestedAt    DateTime                  @default(now())
+  lastRequestedAt     DateTime                  @default(now())
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  consentEvents       MarketingConsentEvent[]
+  blueprintDeliveries BlueprintDelivery[]
+  sequenceEnrollments EmailSequenceEnrollment[]
+
+  @@index([lastRequestedAt])
+}
+
+model MarketingConsentEvent {
+  id             String                    @id @default(cuid())
+  leadId         String
+  action         MarketingConsentAction
+  consentVersion String
+  createdAt      DateTime                  @default(now())
+  lead           Lead                      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  enrollments    EmailSequenceEnrollment[]
+
+  @@index([leadId, createdAt])
+}
+
+model BlueprintDelivery {
+  id                String         @id @default(cuid())
+  leadId            String
+  guideVersion      String         @default("v1")
+  tokenHash         String         @unique
+  tokenExpiresAt    DateTime
+  status            EmailJobStatus @default(PENDING)
+  attempts          Int            @default(0)
+  downloadCount     Int            @default(0)
+  nextAttemptAt     DateTime       @default(now())
+  lockedAt          DateTime?
+  providerMessageId String?
+  sentAt            DateTime?
+  lastError         String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  lead              Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@unique([leadId, guideVersion])
+  @@index([status, nextAttemptAt])
+  @@index([providerMessageId])
+}
+
+model EmailSequenceStep {
+  id          String     @id @default(cuid())
+  sequenceKey String     @default("blueprint-onboarding")
+  stepNumber  Int
+  delayDays   Int
+  subject     String
+  bodyText    String     @db.Text
+  isEnabled   Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  jobs        EmailJob[]
+
+  @@unique([sequenceKey, stepNumber])
+  @@index([sequenceKey, isEnabled, stepNumber])
+}
+
+model EmailSequenceEnrollment {
+  id             String                @id @default(cuid())
+  leadId         String
+  consentEventId String
+  sequenceKey    String                @default("blueprint-onboarding")
+  consentVersion String
+  status         EmailEnrollmentStatus @default(ACTIVE)
+  startedAt      DateTime              @default(now())
+  pausedAt       DateTime?
+  cancelledAt    DateTime?
+  completedAt    DateTime?
+  lead           Lead                  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  consentEvent   MarketingConsentEvent @relation(fields: [consentEventId], references: [id], onDelete: Cascade)
+  jobs           EmailJob[]
+
+  @@unique([consentEventId, sequenceKey])
+  @@index([status, startedAt])
+}
+
+model EmailJob {
+  id                String                  @id @default(cuid())
+  enrollmentId      String
+  stepId            String
+  idempotencyKey    String                  @unique
+  scheduledAt       DateTime
+  status            EmailJobStatus          @default(PENDING)
+  attempts          Int                     @default(0)
+  nextAttemptAt     DateTime                @default(now())
+  lockedAt          DateTime?
+  providerMessageId String?
+  sentAt            DateTime?
+  lastError         String?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  enrollment        EmailSequenceEnrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  step              EmailSequenceStep       @relation(fields: [stepId], references: [id], onDelete: Cascade)
+
+  @@unique([enrollmentId, stepId])
+  @@index([status, nextAttemptAt])
+  @@index([providerMessageId])
+}
+
+model EmailAutomationControl {
+  id        String   @id @default("default")
+  paused    Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
+
+model EmailProviderEvent {
+  id                String   @id @default(cuid())
+  providerEventId   String   @unique
+  providerMessageId String
+  eventType         String
+  occurredAt        DateTime
+  createdAt         DateTime @default(now())
+
+  @@index([providerMessageId, occurredAt])
+}
+
 model Entitlement {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   userId    String
   key       String
-  source    String   @default("manual")
-  grantedAt DateTime @default(now())
+  source    String    @default("manual")
+  grantedAt DateTime  @default(now())
   expiresAt DateTime?
   revokedAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, key])
   @@index([userId, revokedAt, expiresAt])
@@ -98,26 +242,26 @@ model LessonProgress {
 }
 
 model ExternalResource {
-  id             String   @id @default(cuid())
-  name           String
-  description    String   @db.Text
-  url            String
-  category       String
-  compatibility  String[]
+  id              String   @id @default(cuid())
+  name            String
+  description     String   @db.Text
+  url             String
+  category        String
+  compatibility   String[]
   costInformation String?
-  privacyNotes   String?  @db.Text
-  displayOrder   Int      @default(0)
-  isPublished    Boolean  @default(false)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  privacyNotes    String?  @db.Text
+  displayOrder    Int      @default(0)
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([isPublished, displayOrder])
 }
 
 model SecurityEvent {
-  id         String   @id @default(cuid())
-  bucket     String
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  bucket    String
+  createdAt DateTime @default(now())
 
   @@index([bucket, createdAt])
 }
@@ -146,13 +290,13 @@ model PasswordResetToken {
 }
 
 model AdminAuditLog {
-  id          String   @id @default(cuid())
-  actorId     String
-  action      String
-  entityType  String
-  entityId    String
-  summary     String
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  actorId    String
+  action     String
+  entityType String
+  entityId   String
+  summary    String
+  createdAt  DateTime @default(now())
 
   @@index([actorId, createdAt])
   @@index([entityType, entityId, createdAt])

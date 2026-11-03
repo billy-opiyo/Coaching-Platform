@@ -27,6 +27,9 @@ Record approved decisions here; do not invent policies, prices, claims, credenti
 | 21 | Private/public Blueprint file policy and storage | Unresolved | Business owner | File access and hosting | Yes before delivery launch |
 | 22 | Calendar integration vs internal availability authority | Unresolved; internal model proposed first | Business owner/coach | Booking architecture | Yes before live booking |
 | 23 | Scheduler/queue and monitoring choices | Unresolved; choose after hosting scaffold | Technical owner | Email/job reliability/ops | Yes before production automation |
+| 24 | Blueprint marketing consent wording and version | Unresolved; capture remains disabled until approved copy/version are configured | Business owner/legal adviser | Guide form, consent record, privacy notice | Yes before collecting guide requests |
+| 25 | Lead retention period | Unresolved; capture remains disabled until a 1–3650 day period is selected | Business owner/legal adviser | Automatic deletion and privacy notice | Yes before collecting guide requests |
+| 26 | Account policies approved for registration | Unresolved; account signup remains disabled until the privacy/terms policy approval flag is set | Business owner/legal adviser | Registration gate | Yes before public signup |
 
 ## Decision record format
 
