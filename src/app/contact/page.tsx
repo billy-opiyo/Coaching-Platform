@@ -1,0 +1,4 @@
+import { PageFrame, PageHeading } from "@/components/site-shell";
+
+export const metadata = { title: "Contact", description: "Contact and support information." };
+export default function ContactPage() { return <PageFrame><main className="page-main"><PageHeading eyebrow="Contact and support" title="We’re preparing support details." description="A verified business contact address and support process have not yet been provided."/><section className="content-wrap"><div className="info-card" style={{maxWidth:680}}><p className="eyebrow">Current status</p><h2>No contact form is active.</h2><p>This page does not currently collect or transmit messages. The owner needs to provide an approved contact channel and response expectations before support can be offered.</p></div></section></main></PageFrame>; }

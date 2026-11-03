@@ -1,0 +1,34 @@
+# Coaching Platform
+
+A phased web platform for educational resources, coaching, and member tools. The current implementation includes the Phase 1 public foundation and a foundation for account authentication and secure content administration. The member dashboard, email automation, squads, payments, and bookings remain future phases.
+
+## Requirements
+
+- Node.js 20.19+, 22.12+, or 24+
+- npm
+
+## Local development
+
+```powershell
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## Checks
+
+```powershell
+npm run lint
+npm run typecheck
+npm run test:unit
+npm run build
+```
+
+## Environment
+
+Set `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_INDEXING_ENABLED=true` only after the hostname, public copy, and resources are approved. Without both values, the site emits a disallow-all robots policy, noindex metadata, and an empty sitemap. Database-backed account and admin flows also require `DATABASE_URL`, `AUTH_SECRET`, and the email settings documented in `.env.example`.
+
+## Project status
+
+Phase 1 public foundation and secure content-management/authentication foundation are implemented. Phase 2 member features are next. See [`docs/implementation-plan.md`](docs/implementation-plan.md), [`docs/implementation-audit.md`](docs/implementation-audit.md), and [`docs/business-decisions.md`](docs/business-decisions.md). Public copy and learning topics are sample material until owner approval. The site is configured not to be indexed until the public hostname and indexing approval are supplied. No payments, lead forms, or bookings are live. Database-backed behavior requires a configured PostgreSQL `DATABASE_URL`; no production database or credentials are included.

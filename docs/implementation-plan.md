@@ -1,23 +1,25 @@
 # Implementation Plan
 
-**Status:** Proposed backlog derived from the Master Implementation Plan; Phase 0 documentation prepared.  
-**Implementation gate:** Review this audit and plan before major architectural or visual changes.
+**Status:** Active phased implementation. Phase 0 documentation was reviewed by the owner, and the owner authorized continuing through all phases and pushing each completed phase to GitHub. Phase 1 implementation and local acceptance checks are complete; the push is in progress.
 
-## Phase 0 — Audit and architecture (current)
+## Phase 0 — Audit and architecture (complete)
 
 - [x] Inspect the workspace before application changes.
 - [x] Document existing capabilities and gaps in `implementation-audit.md`.
 - [x] Prepare route map, architecture, data model, security, deployment, and business-decision registers.
-- [ ] Review and approve this foundation and resolve scaffold-level choices.
+- [x] Owner reviewed the foundation and authorized continuation. Unresolved business choices remain tracked in `business-decisions.md` and do not block independent work.
 
 ## Phase 1 — Foundation and public website
 
-1. Establish a new Next.js App Router + React + strict TypeScript application after review; choose package manager and pin runtime versions.
-2. Add a shared accessible design system using the brief's navy/teal/light palette, semantic tokens, responsive layout primitives, and one suitable icon system. Check contrast rather than assuming palette pairs pass.
-3. Implement public pages: home, about, resources/category/lesson, tools, Blueprint, pricing, coaching, contact, privacy, terms, and refund policy. Mark unapproved copy and missing assets clearly; do not make unsupported claims.
-4. Add content data model and authorized admin editing/publishing for learning paths, lessons, and curated tools. Validate YouTube URLs/IDs and external URL schemes.
-5. Add metadata, sitemap, robots, and appropriate structured data without leaking sensitive information.
-6. Establish a secure admin authorization foundation. No admin page may be a decorative or unprotected placeholder.
+1. [x] Establish a Next.js App Router + React + strict TypeScript application with npm and a documented supported Node runtime.
+2. [x] Add a shared responsive visual system and native accessible public navigation.
+3. [x] Implement home, about, resources/category/lesson, tools, Blueprint, pricing, coaching, contact, privacy, terms, refund, and account entry pages. Unapproved copy remains identified as sample or unavailable.
+4. [x] Add Prisma content models and admin editing/publishing for learning paths, lessons, and curated tools with URL validation.
+5. [x] Add noindex-by-default metadata, robots policy, and sitemap gated on public hostname/indexing configuration.
+6. [x] Add credential auth, verification/recovery, admin-only content authorization, and audited mutations as a foundation for protected management.
+7. [x] Verify the final tree with lint, typecheck, unit tests, Prisma validation, production build, and production dependency audit (zero production vulnerabilities); push the completed Phase 1 commit.
+
+**Current boundary:** PostgreSQL schema and migration are generated and validated locally but have not been applied to an owner database. Database-backed routes, outbound email, and actual admin login require configured secrets, a database, and an owner-verified admin account. Public browser verification does not establish those external integrations.
 
 ## Phase 2 — Authentication and member dashboard
 

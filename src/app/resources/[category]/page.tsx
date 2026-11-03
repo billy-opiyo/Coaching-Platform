@@ -1,0 +1,8 @@
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { getPublishedPath, getPublishedPaths } from "@/lib/published-content";
+import { PageFrame, PageHeading } from "@/components/site-shell";
+
+export async function generateStaticParams() { return (await getPublishedPaths()).map((path) => ({ category: path.slug })); }
+export async function generateMetadata({ params }: { params: Promise<{ category: string }> }) { const { category } = await params; const path = await getPublishedPath(category); return { title: path ? `${path.name} resources` : "Resources" }; }
+export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) { const { category } = await params; const path = await getPublishedPath(category); if (!path) notFound(); return <PageFrame><main className="page-main"><PageHeading eyebrow="Learning path" title={path.name} description={path.description}/><section className="content-wrap"><div className="resource-grid">{path.lessons.map((lesson) => <article className="resource-card" key={lesson.slug}><p className="eyebrow">{lesson.durationMins ? `${lesson.durationMins} min` : "Lesson"}</p><h3>{lesson.title}</h3><p>{lesson.summary}</p><Link className="card-link" href={`/resources/${path.slug}/${lesson.slug}`}>Read resource <span aria-hidden="true">→</span></Link></article>)}</div><div style={{marginTop:32}}><Link className="text-link" href="/resources">← All learning paths</Link></div>{path.isSample && <p className="notice" style={{marginTop:32}}>Sample topics require content-owner review before publication as final educational guidance.</p>}</section></main></PageFrame>; }

@@ -1,6 +1,6 @@
 # Proposed Architecture
 
-**Status:** Phase 0 proposal for a new application; no implementation exists yet.
+**Status:** Current architecture record. Phase 1 public, account-authentication, database schema, and content-admin foundations are implemented. Provider accounts and production environment are not configured.
 
 ## System shape
 
@@ -20,20 +20,20 @@ Scheduler/queue ──> idempotent notification and maintenance jobs
 Providers ──signed webhooks──> verified event handlers ──> domain services
 ```
 
-## Proposed defaults, subject to Phase 0 review
+## Implemented foundation and remaining provider choices
 
-- **Web:** Next.js App Router, React, strict TypeScript.
-- **Data:** PostgreSQL on Neon as the brief's preferred default; Prisma if compatible with the current framework/deployment choices. Use additive, reviewable migrations.
-- **Auth:** Reuse if a suitable system is later found; this workspace is empty. Otherwise select Auth.js or an appropriate alternative during foundation work. No auth choice is installed yet.
-- **Hosting:** Prefer an existing arrangement if discovered outside this empty workspace; otherwise Vercel is the brief's default candidate.
-- **Email:** Resend is the brief's stated provider, contingent on account, sending-domain verification, and current feature/region suitability. Use one notification service and separate transactional and marketing policy.
+- **Web:** Next.js App Router, React, strict TypeScript, and npm are installed. Route groups are not needed yet.
+- **Data:** Prisma 7 models PostgreSQL. The initial migration is additive and generated; `DATABASE_URL` is unconfigured and no live migration has run. Neon remains a candidate, not a selected/provisioned service.
+- **Auth:** Auth.js credentials provider with JWT sessions, bcrypt password hashes, verified-email requirement, single-use verification/reset tokens, session-version invalidation, hashed rate-limit buckets, and database-backed role checks is implemented. Registration remains disabled unless explicitly configured with the required services.
+- **Hosting:** No host or deployment configuration was found or selected. Vercel remains a candidate only.
+- **Email:** Resend adapter code is present for verification and reset messages. No API key, verified sender, or production sending configuration is supplied.
 - **Scheduled work:** A reliable external scheduler/queue or durable database-backed job pattern must run independently of a browser. Select based on the chosen host and retry/idempotency needs.
 - **Payments:** Dedicated provider interface; M-Pesa Daraja is a candidate in the brief. Confirm country, merchant account, recurring billing, international payments, fees, refunds, and webhook model before implementation/activation.
 - **Files:** Store the supplied Blueprint/audio in private object storage if restricted delivery is selected; Cloudflare R2 is a candidate from the brief. Do not place secret credentials in client bundles.
 - **Calendar:** Start with internal availability/booking unless the owner selects an external calendar; define one authoritative availability source.
 - **Monitoring:** Select a host-compatible error/monitoring service only after requirements and privacy implications are assessed.
 
-These are proposed defaults, not verified account capabilities or service commitments. No paid service should be added without an identified requirement.
+Candidates are not verified account capabilities or service commitments. No paid service should be added without an identified requirement.
 
 ## Application boundaries
 
@@ -60,11 +60,11 @@ These are proposed defaults, not verified account capabilities or service commit
 
 `/admin`, `/admin/content`, `/admin/resources`, `/admin/leads`, `/admin/members`, `/admin/programmes`, `/admin/squads`, `/admin/bookings`, `/admin/email`, `/admin/settings`.
 
-Implement functional journeys in phase order; do not create empty route shells as a substitute for behavior.
+Public routes listed above are implemented. Account entry and admin content routes exist; member, lead, payment, booking, and remaining admin workflows are still phased work. Implement functional journeys in phase order; do not create empty route shells as a substitute for behavior.
 
 ## Design system direction
 
-Inspecting the repository found no existing tokens, font, icon set, or component library. The initial design proposal follows the supplied visual specification: calm navy, teal accent, light reading/dashboard surfaces, high contrast semantic tokens, shared typography/spacing/layout primitives, responsive navigation, consistent accessible forms and status feedback, and a dedicated low-distraction dark protocol. Verify WCAG contrast for actual pairings; adjust token pairings as needed. Do not introduce a UI library before documenting why it is needed. Design implementation is held for review.
+The repository had no existing tokens, font, icon set, or component library. The Phase 1 public design foundation now uses calm navy/teal/light surfaces, shared typography, spacing, cards, buttons, and responsive navigation. Contrast and full accessibility checks remain Phase 8 acceptance work. The dedicated dark protocol and member/admin-wide application of the design system remain in later phases.
 
 ## Integration and data flow rules
 
