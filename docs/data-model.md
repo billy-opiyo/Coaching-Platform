@@ -1,6 +1,6 @@
 # Data Model Proposal
 
-**Status:** Logical model with current snapshots through Phase 4. Prisma 7/PostgreSQL schema and additive migrations cover identity, published content, progress, entitlements, private daily tracker entries, Blueprint leads/private delivery tokens, append-only consent events, four-step email sequences, durable jobs, provider events, and admin audit. The owner database has not been configured or migrated.
+**Status:** Logical model with current snapshots through Phase 5. Prisma 7/PostgreSQL schema and additive migrations cover identity, published content, progress, entitlements, private daily tracker entries, opt-in accountability squads, weekly group check-ins, moderation reports/notifications, Blueprint leads/private delivery tokens, append-only consent events, four-step email sequences, durable jobs, provider events, and admin audit. The owner database has not been configured or migrated.
 
 ## Modeling principles
 
@@ -36,6 +36,9 @@ The remaining entities are logical suggestions, not a requirement to create one 
 - `BlueprintDelivery` stores a hash of a signed 48-hour access token, status, retry timestamps/count, provider message ID, and capped download count. The PDF is read from an absolute path outside the public directory.
 - `EmailSequenceEnrollment` references the exact opt-in event/version. `EmailJob` has unique enrollment/step and provider idempotency keys, due/lock/retry state, message ID, and result status. `EmailAutomationControl` starts paused. `EmailProviderEvent` deduplicates signed provider events.
 - `TrackerEntry` is unique per user and calendar date, contains three bounded 1–5 self-reflection scores and an optional 500-character note, and cascades with its user. Every read and mutation supplies the authenticated user ID.
+- `AccountabilityGroup` has explicit DRAFT/OPEN/CLOSED state and an owner-managed capacity/current count. `SquadMembership` stores member status, FIFO waitlist time, and the approved guideline version and affirmative agreement time. A serializable transaction reserves group capacity and promotes the first waitlisted member when a place opens.
+- `SquadConsentEvent` appends each affirmative opt-in and voluntary opt-out with the exact policy version; removal by a moderator is not represented as member consent withdrawal.
+- `SquadCheckIn` stores one structured focus/reflection pair per active membership/week and is visible only to active peers in that same group. `SquadReport` stores private moderation submissions; only platform administrators can review or manage squads. `SquadNotification` is an in-app status message, not an external email.
 - Email lead records and provider events are deleted by the authenticated scheduler after the owner-selected retention period, with active sequences and unexpired guide links allowed to finish first.
 - Lesson belongs to a learning path/category; lesson progress uniquely links user and lesson.
 - Lead can have consent history and email enrollment/delivery history without requiring a member account.

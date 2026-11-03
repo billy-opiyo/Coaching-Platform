@@ -11,5 +11,5 @@ export default function DashboardLayout({ children }: Readonly<{ children: React
 async function MemberShell({ children }: Readonly<{ children: React.ReactNode }>) {
   const user = await requireUser();
   if (!user) redirect("/login?callbackUrl=%2Fdashboard");
-  return <main className="page-main"><header className="member-header"><div><p className="eyebrow">Member space</p><p className="member-greeting">{user.name ? `Hello, ${user.name}` : "Your learning space"}</p></div><nav aria-label="Member navigation"><Link href="/dashboard">Dashboard</Link><Link href="/dashboard/learning">Learning</Link><Link href="/dashboard/protocol">Pause exercise</Link><Link href="/dashboard/tracker">Tracker</Link><Link href="/dashboard/settings">Settings</Link></nav></header>{children}</main>;
+  return <main className="page-main"><header className="member-header"><div><p className="eyebrow">Member space</p><p className="member-greeting">{user.name ? `Hello, ${user.name}` : "Your learning space"}</p></div><nav aria-label="Member navigation"><Link href="/dashboard">Dashboard</Link><Link href="/dashboard/learning">Learning</Link><Link href="/dashboard/protocol">Pause exercise</Link><Link href="/dashboard/tracker">Tracker</Link><Link href="/dashboard/squads">Squads</Link><Link href="/dashboard/settings">Settings</Link></nav></header>{children}</main>;
 }

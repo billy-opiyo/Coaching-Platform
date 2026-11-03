@@ -1,6 +1,6 @@
 # Proposed Architecture
 
-**Status:** Current architecture record. Phases 1–4 public, content-admin, member dashboard, tracker, and protocol foundations are implemented. Provider accounts, owner database, and production environment are not configured.
+**Status:** Current architecture record. Phases 1–5 public, content-admin, member dashboard, tracker, protocol, and squad foundations are implemented; squads remain closed behind the owner-policy gate. Provider accounts, owner database, and production environment are not configured.
 
 ## System shape
 
@@ -42,7 +42,7 @@ Candidates are not verified account capabilities or service commitments. No paid
 - **Content:** Public readers receive published lessons only. Admin editing/publishing uses explicit permission checks.
 - **Leads/consent:** Blueprint request and marketing consent are separate records/states. Unsubscribe cancels pending marketing work; transactional notices use their own rules.
 - **Entitlements/payments:** Product definitions map to entitlements centrally. Only verified, idempotent provider events can confirm payments or grant paid access.
-- **Sensitive member data:** Tracker and protocol use are private by default. Admin content privileges do not imply journal access.
+- **Sensitive member data:** Tracker entries are private to the member account. Squad participation is an explicit, versioned opt-in; weekly squad check-ins are shared only with active group peers. Tracker data and protocol use are never copied into a group. Moderation reports are restricted to platform administrators.
 - **Jobs/notifications:** A shared service owns enqueue, schedule, delivery attempt, retry, idempotency key, unsubscribe checks, and provider event updates.
 - **Bookings/groups:** Concurrency-sensitive operations use database transactions and constraints.
 

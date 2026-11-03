@@ -68,3 +68,9 @@ export async function requireAdmin() {
   if (!user || user.disabledAt || (user.role !== "CONTENT_ADMIN" && user.role !== "PLATFORM_ADMIN")) return null;
   return user;
 }
+
+export async function requirePlatformAdmin() {
+  const user = await requireUser();
+  if (!user || user.role !== "PLATFORM_ADMIN") return null;
+  return user;
+}

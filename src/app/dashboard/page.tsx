@@ -28,6 +28,7 @@ async function DashboardContent() {
       <div className="member-later-grid" aria-label="Member tools">
         <article className="info-card"><h2>Daily check-in</h2><p>{recentCheckIn ? `Your latest check-in was ${recentCheckIn.entryDate.toLocaleDateString(undefined, { dateStyle: "medium", timeZone: "UTC" })}.` : "Add an optional private reflection about today."} Scores and notes are visible only to you.</p><Link className="text-link" href="/dashboard/tracker">Open your tracker →</Link></article>
         <article className="info-card"><h2>Two-minute pause</h2><p>Use an optional text-first grounding sequence. It does not save protocol activity.</p><Link className="text-link" href="/dashboard/protocol">Open the exercise →</Link></article>
+        <article className="info-card"><h2>Accountability squads</h2><p>Join a group only when community guidelines are approved and participation is open.</p><Link className="text-link" href="/dashboard/squads">View squad status →</Link></article>
         <article className="info-card"><h2>Coaching and groups</h2><p>Bookings and optional accountability groups are not active. No paid feature is presented as available.</p><span className="status-badge">Not available yet</span></article>
       </div>
     </section>

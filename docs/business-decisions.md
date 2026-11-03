@@ -32,6 +32,8 @@ Record approved decisions here; do not invent policies, prices, claims, credenti
 | 26 | Account policies approved for registration | Unresolved; account signup remains disabled until the privacy/terms policy approval flag is set | Business owner/legal adviser | Registration gate | Yes before public signup |
 | 27 | Tracker fields, reflection retention, and notice | Initial private check-in uses mood, energy, stress (1–5) and optional 500-character note; tracker retention period remains unresolved and no automated expiry runs | Business owner/legal adviser | Tracker UI, privacy notice, deletion workflow | Yes before broad member rollout |
 | 28 | Panic Protocol copy, audio, and escalation resources | Text-only neutral prompts are implemented; no recording or country-specific crisis contacts supplied | Business owner/coach/legal adviser | Protocol copy/audio and support notice | Audio/market-specific notice before launch |
+| 29 | Squad guidelines, support, moderation, eligibility, and consent version | Squads stay closed until approved guideline text/version and moderation/support process are configured; current eligibility is verified member accounts | Business owner/legal adviser | Member gate, opt-in record, report review, support flow | Yes before opening squads |
+| 30 | Squad check-in and report retention | No automatic retention/deletion rule implemented; member check-ins persist with membership history and reports persist for moderation | Business owner/legal adviser | Privacy notice, deletion/retention operations | Yes before collecting group content |
 
 ## Decision record format
 

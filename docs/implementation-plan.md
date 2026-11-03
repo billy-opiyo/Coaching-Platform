@@ -1,6 +1,6 @@
 # Implementation Plan
 
-**Status:** Active phased implementation. Phase 0 was reviewed by the owner. Phases 1–3 are complete and pushed to GitHub; Phase 4 implementation is complete and being pushed; Phases 5–8 remain.
+**Status:** Active phased implementation. Phases 1–5 are complete and pushed to GitHub; Phases 6–8 remain.
 
 ## Phase 0 — Audit and architecture (complete)
 
@@ -53,9 +53,12 @@
 
 ## Phase 5 — Accountability Squads
 
-1. Implement explicit opt-in, eligibility, waiting list, transactional assignment, capacity rules, status, leave, and notifications.
-2. Add structured weekly check-ins, moderation/reporting controls, and administrator management.
-3. Apply approved community guidelines; do not add chat or share tracker data by default.
+1. [x] Implement explicit versioned opt-in, verified-member eligibility, capacity-safe assignment, FIFO waitlist, leave/promotion, and in-app notifications.
+2. [x] Add structured weekly check-ins, private reports, platform-admin moderation, squad/member management, and audited privileged changes.
+3. [x] Keep tracker data separate; share check-ins only within an active group after an explicit sharing acknowledgment; group and report content is not a chat feed.
+4. [x] Verify Prisma schema/client, capacity and waitlist invariants, typecheck, lint, unit tests (21 passed), production build, and anonymous route access; push Phase 5.
+
+**Current boundary:** Squads remain closed until the owner sets `SQUADS_POLICIES_APPROVED=true` and supplies `SQUADS_POLICY_VERSION` and approved `SQUADS_POLICY_TEXT` for community guidelines, sharing notice, and moderation/support procedures. Capacity is configured per group. Only platform administrators can manage groups or review reports. The owner database has not been migrated, so the SQL migration was reviewed against Prisma's schema but could not be applied or verified against PostgreSQL. No group/check-in retention period is configured. Production build passed; anonymous access returned Next's streaming redirect to sign-in. Authenticated database-backed squad flows require owner credentials and remain unverified against a live database.
 
 ## Phase 6 — Payments and coaching bookings
 
@@ -84,4 +87,4 @@ Complete relevant unit, integration, end-to-end, and security tests; lint/type-c
 
 ## Immediate next step
 
-Review Phase 0 documents and resolve scaffold-level choices. Once reviewed, proceed with Phase 1 only. Maintain `business-decisions.md` as decisions become available; continue independent work where possible without inventing policies.
+Proceed with Phase 6. Confirm payment and booking business decisions before selecting or activating providers; continue independent catalogue, booking, and administration work without enabling live payments or inventing policies.

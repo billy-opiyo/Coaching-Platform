@@ -49,6 +49,7 @@ Treat account data, behavior-related activity, tracker records, reflections, gro
 - Squad membership is opt-in, capacity-safe, and reversible via leave flow.
 - Explain what peers can see; do not promise peer confidentiality absolutely.
 - Tracker check-ins are scoped by the authenticated user on every query and mutation, unique per member/date, and can be edited or deleted by that member. Do not expose notes to content administrators or analytics. The browser-only protocol does not persist use or answers.
+- Squad membership requires a separate affirmative opt-in tied to the approved policy text/version and verified member eligibility. Each opt-in and voluntary opt-out is appended to consent history. Capacity is reserved transactionally; waitlists are FIFO and promoted when a place opens. Weekly check-ins are visible only to active group peers and are never copied from the private tracker. Safety/conduct reports are private to platform administrators; content administrators cannot access them. Squads stay closed until policy approval, text, and version are configured.
 - Do not retain free-text protocol responses or microphone audio without a documented necessity and explicit disclosure.
 - Provide reporting/moderation mechanisms and clear group guidelines once approved.
 
@@ -60,6 +61,7 @@ Members can record and cancel an account-deletion request, but no destructive ac
 
 - Audit privileged changes such as plan/entitlement modifications, refunds, suspensions, and moderation actions.
 - Exclude private journal text and credentials from audit records.
+- Audit squad creation/status/capacity changes, member removals, and report status changes without copying report details into audit summaries.
 - Monitor application errors, job failures, webhook verification/deduplication, email delivery, and booking/payment state inconsistencies.
 - Document backup encryption/access, restore checks, retention, and incident escalation before production.
 

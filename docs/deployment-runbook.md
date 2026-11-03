@@ -30,6 +30,13 @@
 - Review and replace all four disabled `[Draft]` templates from the admin email screen before enabling any step. Confirm unsubscribe and pause/resume behavior in a non-production environment first.
 - There is no live provider, database, scheduler, or private file evidence yet. Do not infer successful delivery from local checks.
 
+## Phase 5 Accountability squads
+
+- The additive migration is `prisma/migrations/20261103050000_accountability_squads/migration.sql`. Review and apply it only to the selected owner database through `npm run db:deploy`.
+- Keep `SQUADS_POLICIES_APPROVED=false`, `SQUADS_POLICY_VERSION` empty, and `SQUADS_POLICY_TEXT` empty until the owner supplies the approved community rules, member sharing notice, moderation/support process, and version identifier. The member page and server actions fail closed until all three policy settings are present.
+- Only platform administrators can open groups, change capacity, remove members, and review reports. Create groups in DRAFT/CLOSED first; capacity is a per-group owner/admin setting.
+- Test waiting-list promotion, member leave, report review, and notification behavior with non-production accounts after the database migration. No automatic squad/check-in/report retention is configured yet; decide and document before collecting group records.
+
 ## Release procedure (to be made host-specific)
 
 1. Review changes and migration SQL; verify the target environment.

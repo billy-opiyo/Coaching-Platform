@@ -34,6 +34,44 @@ enum EmailJobStatus {
   CANCELLED
 }
 
+enum SquadStatus {
+  DRAFT
+  OPEN
+  CLOSED
+}
+
+enum SquadMembershipStatus {
+  ACTIVE
+  WAITLISTED
+  LEFT
+  REMOVED
+}
+
+enum SquadReportStatus {
+  OPEN
+  REVIEWED
+  CLOSED
+}
+
+enum SquadReportCategory {
+  SAFETY
+  CONDUCT
+  OTHER
+}
+
+enum SquadNotificationKind {
+  JOINED
+  WAITLISTED
+  PROMOTED
+  LEFT
+  REMOVED
+}
+
+enum SquadConsentAction {
+  OPT_IN
+  OPT_OUT
+}
+
 model User {
   id                  String               @id @default(cuid())
   email               String               @unique
@@ -48,6 +86,9 @@ model User {
   updatedAt           DateTime             @updatedAt
   lessonProgress      LessonProgress[]
   trackerEntries      TrackerEntry[]
+  squadMemberships    SquadMembership[]
+  squadReports        SquadReport[]        @relation("SquadReportReporter")
+  squadNotifications  SquadNotification[]
   resetTokens         PasswordResetToken[]
   entitlements        Entitlement[]
 
@@ -255,6 +296,101 @@ model TrackerEntry {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, entryDate])
+}
+
+model AccountabilityGroup {
+  id                 String              @id @default(cuid())
+  name               String              @db.VarChar(100)
+  description        String              @db.VarChar(1000)
+  capacity           Int                 @default(8)
+  currentMemberCount Int                 @default(0)
+  status             SquadStatus         @default(DRAFT)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  memberships        SquadMembership[]
+  reports            SquadReport[]
+  notifications      SquadNotification[]
+
+  @@index([status, createdAt])
+}
+
+model SquadMembership {
+  id            String                @id @default(cuid())
+  groupId       String
+  userId        String
+  status        SquadMembershipStatus @default(WAITLISTED)
+  policyVersion String?
+  agreedAt      DateTime?
+  joinedAt      DateTime?
+  waitlistedAt  DateTime?
+  leftAt        DateTime?
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  group         AccountabilityGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checkIns      SquadCheckIn[]
+  reports       SquadReport[]         @relation("SquadReportSubject")
+  consentEvents SquadConsentEvent[]
+
+  @@unique([groupId, userId])
+  @@index([groupId, status, waitlistedAt])
+  @@index([userId, status])
+}
+
+model SquadConsentEvent {
+  id            String             @id @default(cuid())
+  membershipId  String
+  action        SquadConsentAction
+  policyVersion String
+  createdAt     DateTime           @default(now())
+  membership    SquadMembership    @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  @@index([membershipId, createdAt])
+}
+
+model SquadCheckIn {
+  id           String          @id @default(cuid())
+  membershipId String
+  weekStart    DateTime        @db.Date
+  focus        String          @db.VarChar(400)
+  reflection   String          @db.VarChar(400)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  membership   SquadMembership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  @@unique([membershipId, weekStart])
+  @@index([weekStart])
+}
+
+model SquadReport {
+  id           String              @id @default(cuid())
+  groupId      String
+  reporterId   String
+  membershipId String
+  category     SquadReportCategory
+  details      String              @db.VarChar(1000)
+  status       SquadReportStatus   @default(OPEN)
+  createdAt    DateTime            @default(now())
+  reviewedAt   DateTime?
+  group        AccountabilityGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  reporter     User                @relation("SquadReportReporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  membership   SquadMembership     @relation("SquadReportSubject", fields: [membershipId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([groupId, createdAt])
+}
+
+model SquadNotification {
+  id        String                @id @default(cuid())
+  userId    String
+  groupId   String?
+  kind      SquadNotificationKind
+  createdAt DateTime              @default(now())
+  readAt    DateTime?
+  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group     AccountabilityGroup?  @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  @@index([userId, readAt, createdAt])
 }
 
 model ExternalResource {
